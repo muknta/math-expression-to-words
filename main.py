@@ -22,7 +22,7 @@ def concat_order(ord_num: int, order: str) -> str:
     elif ord_len == 2 or ord_len == 3:
         if ord_len == 3 and order[0] != '0':
             res += f'{_digits[int(order[0])]} hundred'
-            if order[0] != '0' or order[1] != '0':
+            if order[1] != '0' or order[2] != '0':
                res += ' and '
         if order[-2] == '1':
             res += _from_ten_to_twenty[int(order[-1])]
