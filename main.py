@@ -7,14 +7,27 @@ _num_orders = ['thousand', 'million', 'billion', 'trillion', 'quadrillion', 'qui
 
 _symb_to_word = {"+":"plus", "-":"minus", "=":"equals", "/":"divide", "%":"percent", "*":"multiplicate", "(":"left bracket", ")":"right bracket", "^":"raise to the power of"}
 
-def is_valid(exp: str):
-    if (set(exp).issubset(f"{digits} {''.join(_symb_to_word.keys())}") and 
-            all(elem.isdigit() or not set(elem).intersection(f"{digits}") for elem in exp.split())):
-        return True
-    else:
-        return False
+def is_valid(exp: str) -> bool:
+    '''Checks validity of a full math expression'''
+    return (set(exp).issubset(f"{digits} {''.join(_symb_to_word.keys())}") and 
+            all(elem.isdigit() or not set(elem).intersection(f"{digits}") for elem in exp.split()))
 
 def concat_order(ord_num: int, order: str) -> str:
+    """Converts order of a number to words 
+    (12_345_678 -- orders between underscores)
+
+    Params:
+    ord_num (int): position of order in the number
+                   (e.g. '345' in '12345678' - position of thousands -- ord_num=1 in _num_orders)
+    order (str): 1|2|3 digit|s -- order of the number -- part of the string
+                 (e.g. '12' or '345' or '678' in '12345678')
+
+    Returns:
+    str: order of the number in words
+         (e.g. '12' in '12345678' -- 'twelve million, ',
+               '678' -- 'six hundred and seventy-eight')
+
+    """
     res = ''
     ord_len = len(order)
     if ord_len == 1:
@@ -36,14 +49,21 @@ def concat_order(ord_num: int, order: str) -> str:
         res += f' {_num_orders[ord_num-1]}'
     return res
 
-def orders_split(exp: str) -> list:
-    l = [exp[i-3:i] for i in range(len(exp),0,-3)]
-    if len(exp)%3:
-        l[-1] = exp[:len(exp)%3]
+def orders_split(num: str) -> list:
+    """Converts number to order list
+
+    Example:
+    num='12345678' --> return ['12','345','678']
+
+    """
+    l = [num[i-3:i] for i in range(len(num),0,-3)]
+    if len(num)%3:
+        l[-1] = num[:len(num)%3]
     return l
 
 
 def math_to_str(expression: str) -> str:
+    '''Converts math expression to words'''
     if not is_valid(expression):
         return "invalid input"
     res = ''
